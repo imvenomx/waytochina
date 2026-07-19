@@ -626,7 +626,7 @@ h5 {
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  background: var(--dark) url("../public/hero-poster.jpg") center/cover no-repeat;
+  background: var(--dark) url("../media/hero-poster.jpg") center/cover no-repeat;
   /* pull the hero up under the top bar + floating glass nav */
   margin-top: calc(-1 * var(--topbar-h));
 }

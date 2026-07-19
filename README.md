@@ -46,7 +46,7 @@ Or from the CLI: `npx vercel` in this folder.
 | What | File |
 |---|---|
 | Programs, services, stats, team, testimonials, partners, universities, FAQ, contact info | `data/site-data.js` — single source of truth, clearly commented |
-| Hero background video | Replace `public/hero.mp4` (+ `public/hero-poster.jpg`) — keep the names |
+| Hero background video | Replace `media/hero.mp4` (+ `media/hero-poster.jpg`) — keep the names |
 | Proof video thumbnail ("You Could Be Next") | `images/proof-video-thumb.jpg` |
 | Team / testimonial photos | `images/team/member-*.jpg`, `images/testimonials/student-*.jpg` |
 | About page imagery | `images/about-story.jpg`, `images/about-founder.jpg` |
