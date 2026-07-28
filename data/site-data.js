@@ -148,8 +148,8 @@ window.WTC = {
       text: "Step-by-step guidance through the student visa process, from JW202 form to embassy appointment.",
     },
     {
-      title: "Departure & Arrival",
-      text: "Flight guidance, airport pickup, registration, and dormitory check-in — we stay with you until you are settled.",
+      title: "Welcome to Campus",
+      text: "Flight guidance, airport pickup, registration, and dormitory check-in, we stay with you until you're settled into your new home in China.",
     },
   ],
 
@@ -182,6 +182,12 @@ window.WTC = {
       icon: "passport",
     },
     {
+      slug: "flight-booking-group-travel",
+      name: "Flight Booking & Group Travel",
+      short: "We align flight dates by university and intake, so you touch down in China with the same classmates you'll spend the next few years studying alongside.",
+      icon: "ticket",
+    },
+    {
       slug: "pre-departure-arrival",
       name: "Pre-departure & Arrival Support",
       short: "Flights, airport pickup, university registration, and dormitory check-in — a smooth landing in China.",
@@ -191,10 +197,10 @@ window.WTC = {
 
   /* ---------- Track record stats (homepage section 7) — PLACEHOLDER numbers ---------- */
   stats: [
-    { value: 1250, prefix: "+", suffix: "", label: "Students Enrolled" },
+    { value: 1250, prefix: "+", suffix: "", label: "Students Enrolled", live: true },
     { value: 98, prefix: "", suffix: "%", label: "Admission Rate" },
     { value: 120, prefix: "+", suffix: "", label: "Partner Universities" },
-    { value: 900, prefix: "+", suffix: "", label: "Scholarships Secured" },
+    { value: 900, prefix: "+", suffix: "", label: "Scholarships Secured", live: true },
   ],
 
   /* ---------- Team (homepage section 8 + about page) — PLACEHOLDER people ---------- */
@@ -206,12 +212,16 @@ window.WTC = {
     { name: "Full Name", role: "Follow-up Manager", photo: "images/team/member-5.jpg" },
   ],
 
-  /* ---------- Testimonials (homepage section 9) — PLACEHOLDER quotes ---------- */
+  /* ---------- Testimonials (homepage section 9) — SHORT VIDEO REELS (Instagram-reels format)
+     Displayed as vertical 9:16 cards that scroll left/right. Replace each `videoId`
+     with the real YouTube (Short) ID for that student's reel, and `photo` with a
+     portrait poster/thumbnail. If `videoId` is empty the card shows the poster only. ---------- */
   testimonials: [
     {
       name: "Student Name",
       program: "MBBS — Xi'an Jiaotong University",
       photo: "images/testimonials/student-1.jpg",
+      videoId: "", // PLACEHOLDER — real reel/Short YouTube ID
       quote:
         "From my first call to landing in Xi'an, the team handled everything. I got a partial scholarship I didn't even know existed, and my parents could follow every step.",
     },
@@ -219,6 +229,7 @@ window.WTC = {
       name: "Student Name",
       program: "Computer Science — HIT Shenzhen",
       photo: "images/testimonials/student-2.jpg",
+      videoId: "", // PLACEHOLDER — real reel/Short YouTube ID
       quote:
         "I was worried about the documents and the visa, but they prepared everything and double-checked each paper. The whole process took less time than I expected.",
     },
@@ -226,6 +237,7 @@ window.WTC = {
       name: "Parent of Student",
       program: "Civil Engineering — Tongji University",
       photo: "images/testimonials/student-3.jpg",
+      videoId: "", // PLACEHOLDER — real reel/Short YouTube ID
       quote:
         "As a parent, what mattered to me was trust. They were transparent about costs from day one and someone met my son at the airport in Shanghai. I recommend them to every family.",
     },
@@ -233,6 +245,7 @@ window.WTC = {
       name: "Student Name",
       program: "Business Administration — Fudan University",
       photo: "images/testimonials/student-4.jpg",
+      videoId: "", // PLACEHOLDER — real reel/Short YouTube ID
       quote:
         "The consultation was honest — they told me which universities fit my grades and budget instead of overpromising. One year later I'm studying in Shanghai, fully settled.",
     },
@@ -359,10 +372,6 @@ window.WTC = {
     {
       q: "Can I get a scholarship?",
       a: "Yes — this is our specialty. We match eligible students with Chinese Government Scholarship (CSC), provincial, and university-level scholarships that can cover partial or full tuition, accommodation, and even a monthly stipend. Eligibility depends on your grades, chosen program, and application timing.",
-    },
-    {
-      q: "What documents are required for the application?",
-      a: "Typically: your passport, high school diploma or bachelor's degree and transcripts (translated and notarized), a medical examination form, a police clearance certificate, a motivation letter, and passport photos. Master's applicants also need recommendation letters. We prepare and verify the full file with you.",
     },
     {
       q: "How long does the application process take?",

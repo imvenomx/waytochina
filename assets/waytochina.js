@@ -30,6 +30,8 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="10" r="3.2"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
     plane:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',
+    ticket:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><line x1="13" y1="6" x2="13" y2="18" stroke-dasharray="2 3"/></svg>',
     phone:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
     whatsapp:
@@ -263,11 +265,26 @@
       .map(function (s) {
         return (
           '<div class="stat"><div class="value">' + esc(s.prefix) +
-          '<span class="count" data-target="' + s.value + '">0</span>' + esc(s.suffix) +
+          '<span class="count" data-target="' + s.value + '"' +
+          (s.live ? ' data-live="1"' : "") + ">0</span>" + esc(s.suffix) +
           '</div><div class="label">' + esc(s.label) + "</div></div>"
         );
       })
       .join("");
+
+    // Live counters keep ticking upward after the intro count-up (e.g. 1250 → 1255 → 1265…)
+    function startLiveTicker() {
+      var liveEls = grid.querySelectorAll('.count[data-live="1"]');
+      if (!liveEls.length) return;
+      setInterval(function () {
+        liveEls.forEach(function (el) {
+          var current = parseInt(el.getAttribute("data-target"), 10) || 0;
+          current += 1 + Math.floor(Math.random() * 9); // +1 to +9
+          el.setAttribute("data-target", current);
+          el.textContent = current.toLocaleString("en-US");
+        });
+      }, 4000);
+    }
 
     var animated = false;
     var io = new IntersectionObserver(
@@ -277,12 +294,18 @@
           animated = true;
           var reduced =
             window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (reduced) {
+            grid.querySelectorAll(".count").forEach(function (el) {
+              var target = parseInt(el.getAttribute("data-target"), 10) || 0;
+              el.textContent = target.toLocaleString("en-US");
+            });
+            startLiveTicker();
+            io.disconnect();
+            return;
+          }
+          var pending = grid.querySelectorAll(".count").length;
           grid.querySelectorAll(".count").forEach(function (el) {
             var target = parseInt(el.getAttribute("data-target"), 10) || 0;
-            if (reduced) {
-              el.textContent = target.toLocaleString("en-US");
-              return;
-            }
             var start = null;
             var dur = 1800;
             function tick(ts) {
@@ -290,7 +313,12 @@
               var p = Math.min((ts - start) / dur, 1);
               var eased = 1 - Math.pow(1 - p, 3);
               el.textContent = Math.round(target * eased).toLocaleString("en-US");
-              if (p < 1) requestAnimationFrame(tick);
+              if (p < 1) {
+                requestAnimationFrame(tick);
+              } else {
+                pending -= 1;
+                if (pending === 0) startLiveTicker();
+              }
             }
             requestAnimationFrame(tick);
           });
@@ -325,29 +353,39 @@
   function initTestimonials() {
     var wrap = document.getElementById("testimonials-wrapper");
     if (!wrap) return;
+    // Instagram-reels format: vertical 9:16 video cards that scroll left/right.
     wrap.innerHTML = (WTC.testimonials || [])
       .map(function (t) {
+        var hasVideo = !!t.videoId;
         return (
-          '<div class="swiper-slide"><article class="testimonial-card">' +
-          '<div class="quote-mark">' + icon("quote") + "</div>" +
-          "<blockquote>" + esc(t.quote) + "</blockquote>" +
-          '<div class="testimonial-person">' +
-          '<img src="' + asset(t.photo) + '" alt="' + esc(t.name) + '" loading="lazy"/>' +
-          '<div><div class="name">' + esc(t.name) + '</div><div class="program">' + esc(t.program) + "</div></div>" +
+          '<div class="swiper-slide">' +
+          '<article class="reel-card' + (hasVideo ? " video-frame" : "") + '"' +
+          (hasVideo ? ' data-youtube="' + esc(t.videoId) + '"' : "") + ">" +
+          '<img src="' + asset(t.photo) + '" alt="' + esc(t.name) + " — " + esc(t.program) + '" loading="lazy"/>' +
+          '<div class="reel-shade" aria-hidden="true"></div>' +
+          (hasVideo
+            ? '<button type="button" class="play-btn" aria-label="Play ' + esc(t.name) + ' testimonial">' +
+              icon("play") + "</button>"
+            : "") +
+          '<div class="reel-caption">' +
+          '<div class="reel-quote">' + esc(t.quote) + "</div>" +
+          '<div class="reel-person"><div class="name">' + esc(t.name) +
+          '</div><div class="program">' + esc(t.program) + "</div></div>" +
           "</div></article></div>"
         );
       })
       .join("");
     if (typeof Swiper === "undefined") return;
     new Swiper(".testimonials-swiper", {
-      slidesPerView: 1,
-      spaceBetween: 24,
+      slidesPerView: 1.15,
+      spaceBetween: 20,
       autoHeight: false,
       pagination: { el: "#testimonials-pagination", clickable: true },
       navigation: { nextEl: "#testimonials-next", prevEl: "#testimonials-prev" },
       breakpoints: {
-        700: { slidesPerView: 2 },
-        1080: { slidesPerView: 3 },
+        560: { slidesPerView: 2.2 },
+        900: { slidesPerView: 3 },
+        1200: { slidesPerView: 4 },
       },
     });
   }

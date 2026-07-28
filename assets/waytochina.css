@@ -11,6 +11,7 @@
   --brand-red: #e9332b;
   --brand-red-dark: #c4271f;
   --brand-red-soft: #fdeceb;
+  --success: #16a34a;
   --ink: #1a1a1a;
   --body: #4b5563;
   --muted: #6b7280;
@@ -120,7 +121,12 @@ h5 {
 }
 
 .section {
-  padding-block: 96px;
+  padding-block: 68px;
+}
+
+/* two stacked plain (same-color) sections shouldn't double their gap — e.g. content + CTA */
+.section:not(.section--surface) + .section:not(.section--surface) {
+  padding-top: 0;
 }
 
 .section--surface {
@@ -129,7 +135,7 @@ h5 {
 
 .section-head {
   max-width: 640px;
-  margin: 0 auto 56px;
+  margin: 0 auto 40px;
   text-align: center;
   position: relative;
   z-index: 0;
@@ -263,6 +269,34 @@ h5 {
 
 .btn--red:hover {
   background: var(--brand-red-dark);
+}
+
+/* attention-grabbing pulse for a primary CTA (e.g. proof-band Free Consultation) */
+.btn--pulse {
+  position: relative;
+  animation: btn-pulse 2s ease-out infinite;
+}
+
+.btn--pulse:hover {
+  animation-play-state: paused;
+}
+
+@keyframes btn-pulse {
+  0% {
+    box-shadow: 0 6px 18px rgba(233, 51, 43, 0.28), 0 0 0 0 rgba(233, 51, 43, 0.55);
+  }
+  70% {
+    box-shadow: 0 6px 18px rgba(233, 51, 43, 0.28), 0 0 0 16px rgba(233, 51, 43, 0);
+  }
+  100% {
+    box-shadow: 0 6px 18px rgba(233, 51, 43, 0.28), 0 0 0 0 rgba(233, 51, 43, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--pulse {
+    animation: none;
+  }
 }
 
 .btn--outline {
@@ -666,7 +700,8 @@ h5 {
   position: relative;
   z-index: 2;
   max-width: 880px;
-  padding: calc(var(--topbar-h) + var(--nav-h) + 70px) 24px 110px;
+  /* balanced padding so the headline + CTAs sit centered/higher in the hero */
+  padding: calc(var(--topbar-h) + var(--nav-h) + 8px) 24px 40px;
 }
 
 .hero-content .eyebrow-pill {
@@ -1013,9 +1048,10 @@ h5 {
   box-shadow: 0 6px 16px rgba(233, 51, 43, 0.3);
 }
 
+/* final step turns green to signal success / arrival ("Welcome to Campus") */
 .step-card:last-child .step-num {
-  background: var(--ink);
-  box-shadow: none;
+  background: var(--success);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
 }
 
 .step-card h3 {
@@ -1236,9 +1272,12 @@ h5 {
 
 /* ---------- Track record (red band) ---------- */
 .track-band {
-  background: linear-gradient(120deg, var(--brand-red) 0%, #d1281f 60%, #b92019 100%);
+  /* distinct deep-ink palette with a red glow — a different look from the flat-red competitor band */
+  background:
+    radial-gradient(120% 140% at 85% -20%, rgba(233, 51, 43, 0.38) 0%, transparent 55%),
+    linear-gradient(120deg, #0f1730 0%, #141019 55%, #241016 100%);
   color: #fff;
-  padding-block: 72px;
+  padding-block: 60px;
   position: relative;
   overflow: hidden;
 }
@@ -1362,6 +1401,85 @@ h5 {
 .testimonials-swiper {
   overflow: hidden;
   position: relative;
+  padding-bottom: 4px;
+}
+
+/* ---------- Testimonial reels (Instagram-reels format, vertical, scroll left/right) ---------- */
+.reel-card {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--dark);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+}
+
+.reel-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+}
+
+.reel-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0.82) 100%);
+}
+
+.reel-card .play-btn {
+  width: 62px;
+  height: 62px;
+  box-shadow: 0 0 0 8px rgba(233, 51, 43, 0.22), 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.reel-card .play-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.reel-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 18px 20px;
+  color: #fff;
+  z-index: 2;
+}
+
+.reel-quote {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.reel-person .name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.reel-person .program {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* when a reel is playing, the injected iframe fills the vertical frame */
+.reel-card iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  border: 0;
 }
 
 .testimonial-card {
@@ -1609,7 +1727,7 @@ h5 {
 .site-footer {
   background: var(--dark);
   color: #b9b9c0;
-  padding-top: 76px;
+  padding-top: 56px;
 }
 
 .footer-grid {
@@ -1713,7 +1831,7 @@ h5 {
   background: var(--dark);
   color: #fff;
   text-align: center;
-  padding: calc(var(--topbar-h) + var(--nav-h) + 64px) 24px 84px;
+  padding: calc(var(--topbar-h) + var(--nav-h) + 40px) 24px 56px;
   margin-top: calc(-1 * var(--topbar-h));
   position: relative;
   overflow: hidden;
@@ -1798,12 +1916,12 @@ h5 {
 
 .prose h2 {
   font-size: 1.6rem;
-  margin: 44px 0 14px;
+  margin: 32px 0 14px;
 }
 
 .prose h3 {
   font-size: 1.2rem;
-  margin: 30px 0 10px;
+  margin: 24px 0 10px;
 }
 
 .prose p {
@@ -1847,7 +1965,7 @@ h5 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  margin-top: 40px;
+  margin-top: 28px;
 }
 
 .detail-card {
@@ -2255,14 +2373,14 @@ h5 {
 /* ---------- Small screens: section rhythm ---------- */
 @media (max-width: 700px) {
   .section {
-    padding-block: 64px;
+    padding-block: 48px;
   }
 
   .section-head {
-    margin-bottom: 40px;
+    margin-bottom: 28px;
   }
 
   .cta-strip {
-    padding: 40px 28px;
+    padding: 36px 24px;
   }
 }
