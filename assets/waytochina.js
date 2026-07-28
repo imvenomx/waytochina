@@ -497,6 +497,23 @@
   }
 
   /* ==========================================================
+     11d. Floating WhatsApp button (bottom-right, all pages)
+     ========================================================== */
+  function initWhatsappFab() {
+    if (document.querySelector(".wa-fab")) return;
+    var digits = String(SITE.whatsapp || "").replace(/\D/g, "");
+    if (!digits) return;
+    var a = document.createElement("a");
+    a.className = "wa-fab";
+    a.href = whatsappHref();
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.setAttribute("aria-label", "Chat with us on WhatsApp");
+    a.innerHTML = icon("whatsapp") + '<span class="wa-fab-tip">Chat with us</span>';
+    document.body.appendChild(a);
+  }
+
+  /* ==========================================================
      11c. Language dropdown — close on outside click
      ========================================================== */
   function initLangDropdown() {
@@ -553,6 +570,7 @@
     initUniversities();
     initVideoEmbeds();
     initLangDropdown();
+    initWhatsappFab();
     // reveal last so dynamically rendered .reveal nodes are observed
     initReveal();
   });
